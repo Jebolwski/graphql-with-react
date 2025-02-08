@@ -3,30 +3,27 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 
 const users = [
   { id: "1", name: "John Doe", age: 30, isMarried: true },
-  { id: "2", name: "U. Zengin", age: 23, isMarried: false },
-  { id: "3", name: "E. Eker", age: 18, isMarried: false },
-  { id: "4", name: "Erdem Ali", age: 32, isMarried: true },
+  { id: "2", name: "Jane Smith", age: 25, isMarried: false },
+  { id: "3", name: "Alice Johnson", age: 28, isMarried: false },
 ];
 
 const typeDefs = `
-type Query{
-    getUsers:[User]
-    getUserById:User
+    type Query {
+      getUsers: [User]
+      getUserById(id: ID!): User
     }
-    
-    type Mutation{
-        createUser(name:String!, age:Int!, isMarried:Boolean!):User
-        
-        }
-        
-    type User{
-        id:ID
-        name:String
-        age:Int
-        isMarried:Boolean
+
+    type Mutation {
+      createUser(name: String!, age: Int!, isMarried: Boolean!): User
     }
-            
-            `;
+
+    type User {
+      id: ID
+      name: String
+      age: Int
+      isMarried: Boolean
+    }
+`;
 
 const resolvers = {
   Query: {
@@ -35,6 +32,8 @@ const resolvers = {
     },
     getUserById: (parent, args) => {
       const id = args.id;
+      console.log(id);
+
       return users.find((user) => user.id === id);
     },
   },
@@ -47,6 +46,7 @@ const resolvers = {
         age,
         isMarried,
       };
+      console.log(newUser);
       users.push(newUser);
     },
   },
@@ -54,6 +54,11 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-const { url } = await startStandaloneServer(server, { listen: { port: 4000 } });
+const { url } = await startStandaloneServer(server, {
+  listen: { port: 4000 },
+});
 
-console.log("running", url);
+console.log(`Server Running at: ${url}`);
+
+///// Query, Mutation
+//// typeDefs, resolvers
